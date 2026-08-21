@@ -63,3 +63,18 @@ export function nextGap(spec: BuildSpec): Gap | null {
   }
   return null;
 }
+
+const ASK = readFileSync(path.join(process.cwd(), 'prompts/ask.md'), 'utf8');
+
+export async function askForGap(gap: Gap, spec: BuildSpec): Promise<string> {
+  const context = [
+    `They want: ${spec.restated}`,
+    `Gap field: ${gap.field}`,
+    `Gap kind: ${gap.kind}`,
+    gap.guess ? `Your assumption: ${gap.guess}` : '',
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  return ask(ASK, [{ role: 'user', content: context }]);
+}
