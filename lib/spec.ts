@@ -78,3 +78,29 @@ export async function askForGap(gap: Gap, spec: BuildSpec): Promise<string> {
 
   return ask(ASK, [{ role: 'user', content: context }]);
 }
+
+const FOLD = readFileSync(path.join(process.cwd(), 'prompts/fold.md'), 'utf8');
+
+export async function foldAnswer(
+  spec: BuildSpec,
+  field: string,
+  reply: string
+): Promise<BuildSpec | null> {
+  const context = [
+    `Current spec:`,
+    JSON.stringify(spec, null, 2),
+    ``,
+    `Field asked about: ${field}`,
+    `Their reply: ${reply}`,
+  ].join('\n');
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const raw = await ask(FOLD, [{ role: 'user', content: context }]);
+    const cleaned = raw.replace(/```json|```/g, '').trim();
+    try {
+      const parsed = BuildSpec.safeParse(JSON.parse(cleaned));
+      if (parsed.success) return parsed.data;
+    } catch {}
+  }
+  return null;
+}
