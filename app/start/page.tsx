@@ -9,6 +9,19 @@ export default function Start() {
   const [busy, setBusy] = useState(false);
   const [spec, setSpec] = useState<any>(null);
   const [field, setField] = useState<string>('');
+  const [confirming, setConfirming] = useState(false);
+
+  function confirm() {
+    sessionStorage.setItem('spec', JSON.stringify(spec));
+    window.location.href = '/';
+  }
+
+  function fix() {
+    setConfirming(false);
+    setQuestion('No problem — tell me what I got wrong.');
+    setSpec(null);
+    setField('');
+  }
 
   async function start() {
     setBusy(true);
@@ -21,8 +34,9 @@ export default function Start() {
     setSpec(data.spec ?? null);
     setField(data.gap?.field ?? '');
     if (data.done && data.spec) {
-      sessionStorage.setItem('spec', JSON.stringify(data.spec));
-      window.location.href = '/';
+      setSpec(data.spec);
+      setConfirming(true);
+      setBusy(false);
       return;
     }
     setQuestion(data.done ? 'Got everything I need.' : data.question ?? 'Something went wrong.');
@@ -57,6 +71,35 @@ export default function Start() {
 
       {question && (
         <p className="mt-8 rounded-lg bg-blue-50 p-4 text-neutral-800">{question}</p>
+      )}
+      {confirming && spec && (
+        <div className="mt-8 rounded-lg border border-neutral-300 p-6">
+          <p className="text-sm text-neutral-500">Here's what I understood:</p>
+          <p className="mt-3 text-lg text-neutral-900">{spec.restated}</p>
+
+          <ul className="mt-5 space-y-2 text-sm text-neutral-600">
+            <li>It's for: {spec.audience.value}</li>
+            <li>You'll give it: {spec.inputs.value}</li>
+            <li>It works if: {spec.success_looks_like.value}</li>
+            <li>Watch out for: {spec.risk_note.value}</li>
+          </ul>
+
+          <p className="mt-6 text-neutral-800">Did I get that right?</p>
+          <div className="mt-3 flex gap-3">
+            <button
+              onClick={confirm}
+              className="rounded-lg bg-neutral-900 px-5 py-2.5 text-white"
+            >
+              Yes, let's go
+            </button>
+            <button
+              onClick={fix}
+              className="rounded-lg border border-neutral-300 px-5 py-2.5"
+            >
+              Not quite
+            </button>
+          </div>
+        </div>
       )}
 
       <div className="mt-12 border-t border-neutral-200 pt-8">
