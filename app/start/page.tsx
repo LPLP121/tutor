@@ -7,16 +7,21 @@ export default function Start() {
   const [answer, setAnswer] = useState('');
   const [question, setQuestion] = useState('');
   const [busy, setBusy] = useState(false);
+  const [spec, setSpec] = useState<any>(null);
+  const [field, setField] = useState<string>('');
 
   async function start() {
     setBusy(true);
     const res = await fetch('/api/extract', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answer }),
+      body: JSON.stringify({ answer, spec, field }),
     });
     const data = await res.json();
-    setQuestion(data.question ?? 'Something went wrong.');
+    setSpec(data.spec ?? null);
+    setField(data.gap?.field ?? '');
+    setQuestion(data.done ? 'Got everything I need.' : data.question ?? 'Something went wrong.');
+    setAnswer('');
     setBusy(false);
   }
 
@@ -39,7 +44,7 @@ export default function Start() {
 
       <button
         onClick={start}
-        disabled={busy || answer.trim().length < 10}
+        disabled={busy || answer.trim().length < 1}
         className="mt-4 rounded-lg bg-neutral-900 px-5 py-2.5 text-white disabled:bg-neutral-300"
       >
         {busy ? 'Thinking...' : 'Start'}
