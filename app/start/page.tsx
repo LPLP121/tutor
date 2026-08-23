@@ -20,6 +20,11 @@ export default function Start() {
     const data = await res.json();
     setSpec(data.spec ?? null);
     setField(data.gap?.field ?? '');
+    if (data.done && data.spec) {
+      sessionStorage.setItem('spec', JSON.stringify(data.spec));
+      window.location.href = '/';
+      return;
+    }
     setQuestion(data.done ? 'Got everything I need.' : data.question ?? 'Something went wrong.');
     setAnswer('');
     setBusy(false);

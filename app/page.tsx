@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type Msg = { role: 'user' | 'assistant'; content: string };
 
@@ -8,6 +8,23 @@ export default function Home() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
+  const [spec, setSpec] = useState<any>(null);
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem('spec');
+    if (!stored) return;
+    const parsed = JSON.parse(stored);
+    setSpec(parsed);
+    setBusy(true);
+    fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: [], spec: parsed }),
+    })
+      .then((r) => r.json())
+      .then((d) => setMessages([{ role: 'assistant', content: d.text }]))
+      .finally(() => setBusy(false));
+  }, []);
 
   async function send() {
     if (!input.trim() || busy) return;
@@ -21,7 +38,7 @@ export default function Home() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: next }),
+        body: JSON.stringify({ messages: next, spec }),
       });
       const data = await res.json();
       setMessages([...next, { role: 'assistant', content: data.text }]);
