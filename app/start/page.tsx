@@ -53,6 +53,12 @@ export default function Start() {
         Describe it however it comes out. No right way to say it.
       </p>
 
+      <p className="mt-2 text-sm text-neutral-400">
+        <a href="/data" className="underline hover:text-neutral-600">
+          What we do with what you tell us
+        </a>
+      </p>
+
       <textarea
         value={answer}
         onChange={(e) => setAnswer(e.target.value)}
