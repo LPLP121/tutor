@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { extractSpec, foldAnswer, nextGap, askForGap, BuildSpec } from '@/lib/spec';
+import { getLearnerId } from '@/lib/identity';
 
 export async function POST(req: NextRequest) {
+  const learnerId = await getLearnerId();
   const { answer, spec: priorSpec, field } = await req.json();
 
   let spec;
