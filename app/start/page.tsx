@@ -47,10 +47,10 @@ export default function Start() {
   return (
     <main className="mx-auto max-w-2xl px-6 py-20">
       <h1 className="text-3xl font-medium tracking-tight">
-        What do you want AI to do for you?
+        What's something you'd like AI to help with?
       </h1>
       <p className="mt-3 text-neutral-500">
-        Describe it however it comes out. No right way to say it.
+        We'll build it together — you'll be the one making it.
       </p>
 
       <p className="mt-2 text-sm text-neutral-400">
