@@ -11,8 +11,24 @@ export default function Start() {
   const [field, setField] = useState<string>('');
   const [confirming, setConfirming] = useState(false);
 
-  function confirm() {
+  async function confirm() {
+    setBusy(true);
+    const res = await fetch('/api/plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ spec }),
+    });
+    const data = await res.json();
+    setBusy(false);
+
+    if (!res.ok || !data.plan) {
+      setQuestion('Something went wrong building your plan. Try again in a moment.');
+      return;
+    }
+
     sessionStorage.setItem('spec', JSON.stringify(spec));
+    sessionStorage.setItem('plan', JSON.stringify(data.plan));
+    sessionStorage.setItem('planId', String(data.planId));
     window.location.href = '/';
   }
 
