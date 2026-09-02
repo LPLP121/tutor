@@ -174,3 +174,87 @@ intakes run locally will appear in production data.
 
 which is the real fix.
 
+
+
+\---
+
+
+
+\## F7 — Restatement collapses to the last answer during the asking loop
+
+
+
+\*\*Found:\*\* Week 4, Step 4, first read of the event log.
+
+
+
+Across one intake, `spec\_extracted` fired six times and `restated` read "You want
+
+to share this with your co-workers as well." on every one. That is the answer to
+
+a single follow-up question, not a restatement of what the learner wants. A
+
+different session in the same log produced a proper restatement, so the fold is
+
+overwriting `restated` with the latest reply instead of re-summarising the whole
+
+spec.
+
+
+
+\*\*Impact:\*\* The learner is shown this sentence on the confirmation card and asked
+
+"did I get that right?" They are being asked to confirm their own last sentence
+
+back to them. The plan is then generated from it — both plans in this session
+
+were built on a goal the learner never stated.
+
+
+
+\*\*Why deferred:\*\* Week 3 code, and the fix is in `prompts/fold.md` rather than
+
+anything built this week. Needs a careful prompt change and a retest of the
+
+asking loop.
+
+
+
+\*\*Note:\*\* Found by the event log, seven minutes after the event log was built.
+
+
+
+\---
+
+
+
+\## F8 — Confirm button generates a plan per click
+
+
+
+\*\*Found:\*\* Week 4, Step 4, same session.
+
+
+
+`spec\_confirmed` and `plan\_generated` each fired twice, seconds apart, producing
+
+plan 3 and plan 4 for one learner. `confirm()` sets `busy` but the confirm button
+
+has no `disabled` binding, so a second click starts a second generation.
+
+
+
+\*\*Impact:\*\* Duplicate rows in `specs` and `plans` with no way to tell which one
+
+the learner actually has. Also two model calls at 8000 tokens each. At scale this
+
+is a cost and a data-integrity problem; at three users it is confusing Week 8
+
+data.
+
+
+
+\*\*Why deferred:\*\* One-line fix (`disabled={busy}` on the confirm button), but it
+
+touches the intake screen mid-step. Do it before any real learner session.
+

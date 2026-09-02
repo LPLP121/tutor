@@ -19,7 +19,10 @@ export default function Home() {
     fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: [], spec: parsed }),
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: "I'm ready — where do we start?" }],
+        spec: parsed,
+      }),
     })
       .then((r) => r.json())
       .then((d) => setMessages([{ role: 'assistant', content: d.text }]))

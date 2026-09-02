@@ -11,7 +11,16 @@ export default function Start() {
   const [field, setField] = useState<string>('');
   const [confirming, setConfirming] = useState(false);
 
+  function track(kind: string, payload: any = {}) {
+    fetch('/api/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kind, payload }),
+    }).catch(() => {});
+  }
+
   async function confirm() {
+    track('spec_confirmed', { restated: spec?.restated });    
     setBusy(true);
     const res = await fetch('/api/plan', {
       method: 'POST',
@@ -33,6 +42,7 @@ export default function Start() {
   }
 
   function fix() {
+    track('spec_rejected', { restated: spec?.restated });
     setConfirming(false);
     setQuestion('No problem — tell me what I got wrong.');
     setSpec(null);

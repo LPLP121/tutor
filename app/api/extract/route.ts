@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { extractSpec, foldAnswer, nextGap, askForGap, BuildSpec } from '@/lib/spec';
 import { getLearnerId } from '@/lib/identity';
+import { log } from '@/lib/events';
 
 export async function POST(req: NextRequest) {
   const learnerId = await getLearnerId();
@@ -10,7 +11,12 @@ export async function POST(req: NextRequest) {
   if (priorSpec && field) {
     spec = await foldAnswer(priorSpec, field, answer);
   } else {
+    await log(learnerId, 'intake_started', { length: answer.length });
     spec = await extractSpec(answer);
+  }
+
+  if (spec) {
+    await log(learnerId, 'spec_extracted', { restated: spec.restated });
   }
 
   if (!spec) return NextResponse.json({ error: 'could not understand that' });
