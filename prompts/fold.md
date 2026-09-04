@@ -32,5 +32,27 @@ Return the complete updated spec as JSON. Rules:
 
 
 
+If the field you are given is "correction", different rules apply. The
+
+person has been shown your restatement and told you it is wrong. In that
+
+case:
+
+\- Their reply is a correction to the spec, not an answer to one question.
+
+\- Update every field their correction touches, and set stated true on
+
+&#x20; each one you change.
+
+\- Rewrite restated so it reflects the corrected goal as a whole, not just
+
+&#x20; the thing they corrected.
+
+\- Keep every field their correction does not touch byte-for-byte
+
+&#x20; identical, including its stated flag.
+
+
+
 Return only the JSON object.
 

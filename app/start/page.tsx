@@ -45,8 +45,7 @@ export default function Start() {
     track('spec_rejected', { restated: spec?.restated });
     setConfirming(false);
     setQuestion('No problem — tell me what I got wrong.');
-    setSpec(null);
-    setField('');
+    setField('correction');
   }
 
   async function start() {

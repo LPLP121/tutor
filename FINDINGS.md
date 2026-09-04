@@ -9,6 +9,18 @@ these. Each entry records what was observed, why it was not fixed at the time,
 and where it was found.
 
 
+## End-of-week close
+
+Run this before starting the next week's build. Every finding in this file
+after F6 was found by reading the log, not by noticing something break.
+
+1. Read the last 50 events in the database.
+2. Look for three patterns:
+   - the same value repeating across rows that should differ
+   - the same kind firing twice within seconds
+   - a kind that never fires at all
+3. Write down anything odd as a finding, even if the fix is not happening now.
+
 
 \---
 
@@ -181,7 +193,11 @@ which is the real fix.
 
 
 \## F7 — Restatement collapses to the last answer during the asking loop
-
+**Status: fixed 2026-09-04.** Cause was not the fold prompt. `fix()` cleared
+the spec on rejection, so the learner's correction arrived with no prior spec
+and was extracted as a fresh opening statement. Fix: `fix()` now keeps the
+spec and sets `field` to `correction`, and `prompts/fold.md` has a correction
+branch that folds the change in and rewrites `restated` as a whole.
 
 
 \*\*Found:\*\* Week 4, Step 4, first read of the event log.
