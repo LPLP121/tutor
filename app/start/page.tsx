@@ -119,9 +119,10 @@ export default function Start() {
           <div className="mt-3 flex gap-3">
             <button
               onClick={confirm}
-              className="rounded-lg bg-neutral-900 px-5 py-2.5 text-white"
+              disabled={busy}
+              className="rounded-lg bg-neutral-900 px-5 py-2.5 text-white disabled:bg-neutral-300"
             >
-              Yes, let's go
+              {busy ? 'Building your plan...' : "Yes, let's go"}
             </button>
             <button
               onClick={fix}

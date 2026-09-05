@@ -245,7 +245,10 @@ asking loop.
 
 
 \## F8 — Confirm button generates a plan per click
-
+**Status: fixed 2026-09-04.** Confirm button now has `disabled={busy}`, a
+visible disabled state, and label text that changes to "Building your plan..."
+during generation. Verified: one spec_confirmed and one plan_generated from a
+deliberate multi-click session.
 
 
 \*\*Found:\*\* Week 4, Step 4, same session.
