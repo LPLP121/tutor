@@ -277,3 +277,5 @@ data.
 
 touches the intake screen mid-step. Do it before any real learner session.
 
+F9 — Anonymous identity does not survive private browsing. A learner who uses a private tab, or whose browser clears cookies, loses access to a plan that still exists in the database. The row is unreachable with no path to recover it. Affects anyone on a shared or library computer — the exact deployment context this product is built for.
+
