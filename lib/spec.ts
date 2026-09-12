@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const Field = z.object({
+export const Field = z.object({
   value: z.string(),
   stated: z.boolean(),
 });
