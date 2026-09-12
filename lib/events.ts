@@ -9,7 +9,9 @@ export type EventKind =
   | 'spec_rejected'
   | 'plan_generated'
   | 'step_viewed'
-  | 'step_submitted';
+  | 'step_submitted'
+  | 'tool_created'
+  | 'tool_updated';
 
 export async function log(
   learnerId: string,
