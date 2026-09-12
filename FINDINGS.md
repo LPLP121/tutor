@@ -279,3 +279,17 @@ touches the intake screen mid-step. Do it before any real learner session.
 
 F9 — Anonymous identity does not survive private browsing. A learner who uses a private tab, or whose browser clears cookies, loses access to a plan that still exists in the database. The row is unreachable with no path to recover it. Affects anyone on a shared or library computer — the exact deployment context this product is built for.
 
+
+\### F10 — Scripts under scripts/ need --env-file, not a dotenv import
+
+Standalone scripts are not Next.js, so they do not load `.env.local` on
+their own. The obvious fix — importing `dotenv` and calling `config()` at
+the top — does not work: `import` statements are hoisted and run before
+any code in the file, so `lib/db.ts` and `lib/events.ts` execute
+`neon(process.env.DATABASE_URL!)` before `config()` ever fires. The error
+reads "No database connection string was provided."
+
+Correct form: `npx tsx --env-file=.env.local scripts/<name>.ts`
+
+Found: 9/12/2026, building the Step 2 round-trip test.
+
