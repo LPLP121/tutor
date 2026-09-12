@@ -11,7 +11,11 @@ export type EventKind =
   | 'step_viewed'
   | 'step_submitted'
   | 'tool_created'
-  | 'tool_updated';
+  | 'tool_updated'
+  | 'run_created'
+  | 'run_item_done'
+  | 'run_item_error'
+  | 'run_finished';
 
 export async function log(
   learnerId: string,
