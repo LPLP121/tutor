@@ -293,3 +293,15 @@ Correct form: `npx tsx --env-file=.env.local scripts/<name>.ts`
 
 Found: 9/12/2026, building the Step 2 round-trip test.
 
+### F11 — An item with no answerable content returns blanks, marked "done"
+
+Found: 9/12/2026, first full run loop.
+
+Item 0 ("reading names.txt") has no shape to predict, so `drill_question`
+and `answer` came back as empty strings with `stated: false`. That is the
+prompt behaving correctly — better than inventing a drill. But the row is
+stored with status `done`, indistinguishable from a complete result.
+
+The learner needs to see this. Options: a status of `blank`, or the results
+view treating any empty-value field as something to surface. Decide when
+building the results view, not before.

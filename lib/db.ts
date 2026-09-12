@@ -3,6 +3,7 @@ import type { BuildSpec } from './spec';
 import type { Plan } from './plan';
 import type { ToolSpec } from './toolspec';
 import { log } from './events';
+import { processItem } from './runner';
 
 const sql = neon(process.env.DATABASE_URL!);
 
@@ -156,4 +157,63 @@ export async function loadRun(
   `;
 
   return { status: runRows[0].status as string, items: items as any };
+}
+
+// Processes the next pending item in a run. Returns how many remain after.
+// One item per call — this is what keeps each invocation short.
+export async function stepRun(
+  learnerId: string,
+  runId: number
+): Promise<{ done: boolean; remaining: number }> {
+  const toolRows = await sql`
+    SELECT t.spec, t.fields, t.pass_fail_rule
+    FROM runs r
+    JOIN tools t ON t.id = r.tool_id
+    WHERE r.id = ${runId} AND r.learner_id = ${learnerId}
+  `;
+  if (toolRows.length === 0) throw new Error('run not found');
+
+  const tool = {
+    spec: toolRows[0].spec as string,
+    fields: toolRows[0].fields as ToolSpec['fields'],
+    pass_fail_rule: toolRows[0].pass_fail_rule as string,
+  };
+
+  const next = await sql`
+    SELECT id, item FROM run_items
+    WHERE run_id = ${runId} AND status = 'pending'
+    ORDER BY position
+    LIMIT 1
+  `;
+
+  if (next.length === 0) {
+    await sql`UPDATE runs SET status = 'done' WHERE id = ${runId}`;
+    await log(learnerId, 'run_finished', { run_id: runId });
+    return { done: true, remaining: 0 };
+  }
+
+  const itemId = next[0].id as number;
+
+  try {
+    const outputs = await processItem(tool, next[0].item as string);
+    await sql`
+      UPDATE run_items
+      SET status = 'done', outputs = ${JSON.stringify(outputs)}
+      WHERE id = ${itemId}
+    `;
+    await log(learnerId, 'run_item_done', { run_id: runId, item_id: itemId });
+  } catch (e: any) {
+    await sql`
+      UPDATE run_items
+      SET status = 'error', error = ${String(e.message ?? e)}
+      WHERE id = ${itemId}
+    `;
+    await log(learnerId, 'run_item_error', { run_id: runId, item_id: itemId, error: String(e.message ?? e) });
+  }
+
+  const left = await sql`
+    SELECT COUNT(*)::int AS n FROM run_items
+    WHERE run_id = ${runId} AND status = 'pending'
+  `;
+  return { done: false, remaining: left[0].n as number };
 }
