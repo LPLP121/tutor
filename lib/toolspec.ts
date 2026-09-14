@@ -6,6 +6,8 @@ import { Field } from './spec';
 export const FieldDef = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
+  // 'extract' — pull this out of the item. 'write' — produce it for the item.
+  mode: z.enum(['extract', 'write']).optional(),
 });
 
 export const ToolSpec = z.object({

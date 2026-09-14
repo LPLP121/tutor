@@ -6,9 +6,27 @@ You will be given:
 
 \- WHAT THE TOOL SHOULD PRODUCE: the learner's own sentence
 
-\- FIELDS: the output shape, each with a name and a description
+\- FIELDS: the output shape. Each field has a name, a description, and a mode.
 
 \- ITEM: one piece of the learner's own material
+
+
+
+Two modes, and they are different jobs:
+
+
+
+\*\*extract\*\* — find this in the item. Do not supply it from your own knowledge.
+
+If the item does not contain it, leave "value" empty.
+
+
+
+\*\*write\*\* — produce this for the item. A draft, a reply, a summary, a
+
+suggestion. Base it on the item. This is the field the learner is asking you
+
+to author, so author it.
 
 
 
@@ -20,21 +38,19 @@ with exactly two keys:
 
 
 
-\- "value": a string. What you found or produced for that field.
+\- "value": a string.
 
-\- "stated": true if the item itself states this directly. false if you
+\- "stated": for an extract field, true only if the item says it directly.
 
-&#x20; inferred it, guessed it, or produced it from your own knowledge rather
-
-&#x20; than from the item.
+&#x20; For a write field, always false — you wrote it, the item did not.
 
 
 
-Be strict about "stated". If the item does not say it, "stated" is false,
+Be strict about "stated" on extract fields. If the item does not say it,
 
-even when you are confident. If a field cannot be filled from the item at
+"stated" is false, even when you are confident. A number you calculated, a
 
-all, set "value" to an empty string and "stated" to false.
+term you recognised, a fact you know from elsewhere — all false.
 
 
 

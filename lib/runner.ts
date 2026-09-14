@@ -14,7 +14,7 @@ export async function processItem(
     tool.spec,
     '',
     'FIELDS:',
-    ...tool.fields.map((f) => `- ${f.name}: ${f.description}`),
+    ...tool.fields.map((f) => `- ${f.name} [${f.mode ?? 'extract'}]: ${f.description}`),
     '',
     'ITEM:',
     item,

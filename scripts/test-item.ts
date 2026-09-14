@@ -3,20 +3,19 @@
 import { processItem } from '../lib/runner';
 
 const tool = {
-  spec: 'For each section, give me one drill that makes the learner predict a shape before they see it.',
+  spec: 'For each complaint, tell me what went wrong and draft a reply I can send.',
   fields: [
-    { name: 'concept', description: 'The idea the section teaches' },
-    { name: 'drill_question', description: 'The shape to predict' },
-    { name: 'answer', description: 'The correct shape' },
+    { name: 'product', description: 'Which product the complaint is about', mode: 'extract' as const },
+    { name: 'problem', description: 'What went wrong, in a few words', mode: 'extract' as const },
+    { name: 'reply', description: 'A short, warm reply to the customer that addresses the specific problem', mode: 'write' as const },
   ],
-  pass_fail_rule: 'An output is wrong if the drill can be answered without watching that section.',
+  pass_fail_rule: 'An output is wrong if the reply promises a refund, since I never authorised that.',
 };
 
-const item = `Section 3: building the bigram counting matrix. We make a 2D
-array N of counts, one row per first character and one column per second
-character. There are 26 letters plus a special token, so we allocate it with
-torch.zeros and then walk every word, incrementing N at the index pair for
-each adjacent character pair.`;
+const item = `Ordered the walnut side table on the 3rd, arrived yesterday with
+a long scratch down one leg and the box was crushed on one corner. I don't want
+to ship it back and wait another two weeks. Third order from you and the first
+one that's had a problem.`;
 
 async function main() {
   const outputs = await processItem(tool, item);
