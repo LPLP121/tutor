@@ -15,7 +15,8 @@ export type EventKind =
   | 'run_created'
   | 'run_item_done'
   | 'run_item_error'
-  | 'run_finished';
+  | 'run_finished'
+  | 'verdict_set';
 
 export async function log(
   learnerId: string,

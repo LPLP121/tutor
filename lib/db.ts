@@ -217,3 +217,20 @@ export async function stepRun(
   `;
   return { done: false, remaining: left[0].n as number };
 }
+
+export async function setVerdict(
+  learnerId: string,
+  itemId: number,
+  verdict: 'pass' | 'fail' | null
+): Promise<boolean> {
+  const rows = await sql`
+    UPDATE run_items
+    SET verdict = ${verdict}
+    WHERE id = ${itemId}
+      AND run_id IN (SELECT id FROM runs WHERE learner_id = ${learnerId})
+    RETURNING id
+  `;
+  if (rows.length === 0) return false;
+  await log(learnerId, 'verdict_set', { item_id: itemId, verdict });
+  return true;
+}
