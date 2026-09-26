@@ -119,7 +119,12 @@ export default function Home() {
           </li>
         ))}
       </ol>
-
+      <a
+        href="/tool"
+        style={{ display: 'inline-block', marginTop: 20, padding: '10px 18px', borderRadius: 6, background: '#111', color: 'white', textDecoration: 'none' }}
+      >
+        Open the tool screen
+      </a>
       <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>Coach</h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {messages.map((m, i) => (
