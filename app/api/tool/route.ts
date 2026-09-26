@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getLearnerId } from '@/lib/identity';
-import { ensureLearner, saveTool } from '@/lib/db';
+import { ensureLearner, saveTool, loadLatestTool } from '@/lib/db';
 import { confirmToolSpec, ToolSpecDraft } from '@/lib/toolspec';
 
 export async function POST(req: NextRequest) {
@@ -23,4 +23,9 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
+}
+export async function GET() {
+  const learnerId = await getLearnerId();
+  const latest = await loadLatestTool(learnerId);
+  return NextResponse.json({ tool: latest ? latest.tool : null });
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 const MAX_ITEMS = 25;
@@ -11,6 +11,14 @@ export default function RunPage() {
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
+  const [tool, setTool] = useState<any>(undefined);
+
+  useEffect(() => {
+    fetch('/api/tool')
+      .then((r) => r.json())
+      .then((d) => setTool(d.tool))
+      .catch(() => setTool(null));
+  }, []);
 
   const items = material
     .split('\n')
@@ -75,6 +83,24 @@ export default function RunPage() {
         Paste your material below — one item per line. Your tool runs over every
         line separately.
       </p>
+      {tool === null && (
+        <div style={{ marginTop: 16, padding: 12, background: '#fff8e1', border: '1px solid #f0d48a', borderRadius: 6 }}>
+          You have not saved a tool yet.{' '}
+          <button onClick={() => router.push('/tool')} style={{ border: 'none', background: 'none', textDecoration: 'underline', cursor: 'pointer', padding: 0, fontSize: 'inherit' }}>
+            Go to the tool screen
+          </button>
+        </div>
+      )}
+
+      {tool && (
+        <div style={{ marginTop: 16, marginBottom: 16, padding: 12, background: '#f4f4f5', borderRadius: 6, lineHeight: 1.5 }}>
+          <div style={{ fontSize: 13, color: '#666' }}>Your tool</div>
+          <div style={{ marginTop: 4 }}>{tool.spec}</div>
+          <div style={{ fontSize: 13, color: '#666', marginTop: 8 }}>
+            Gives back: {tool.fields.map((f: any) => f.name).join(', ')}
+          </div>
+        </div>
+      )}
 
       <textarea
         value={material}
