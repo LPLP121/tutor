@@ -125,7 +125,7 @@ export default function Home() {
       >
         Open the tool screen
       </a>
-      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>Coach</h2>
+      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>Stuck on a step? Ask here</h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {messages.map((m, i) => (
           <div
