@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { splitEntries } from '@/lib/entries';
 
 const MAX_ITEMS = 25;
 
@@ -20,10 +21,7 @@ export default function RunPage() {
       .catch(() => setTool(null));
   }, []);
 
-  const items = material
-    .split('\n')
-    .map((l) => l.trim())
-    .filter((l) => l.length > 0);
+  const items = splitEntries(material);
 
   const tooMany = items.length > MAX_ITEMS;
 
@@ -80,8 +78,9 @@ export default function RunPage() {
     <main style={{ maxWidth: 680, margin: '40px auto', padding: '0 20px', fontFamily: 'system-ui, sans-serif' }}>
       <h1 style={{ fontSize: 24, marginBottom: 8 }}>Run your tool</h1>
       <p style={{ color: '#555', marginTop: 0, lineHeight: 1.5 }}>
-        Paste your material below — one item per line. Your tool runs over every
-        line separately.
+        Paste your material below. Leave a blank line between entries, so a
+        whole email with several lines counts as one entry. Your tool runs over
+        each entry separately.
       </p>
       {tool === null && (
         <div style={{ marginTop: 16, padding: 12, background: '#fff8e1', border: '1px solid #f0d48a', borderRadius: 6 }}>
@@ -107,7 +106,7 @@ export default function RunPage() {
         onChange={(e) => setMaterial(e.target.value)}
         disabled={busy}
         rows={14}
-        placeholder={'One item per line.\nAnother item here.\nAnd another.'}
+        placeholder={'First entry. It can run over\nseveral lines.\n\nSecond entry, after a blank line.\n\nThird entry.'}
         style={{ width: '100%', padding: 12, fontSize: 14, fontFamily: 'inherit', lineHeight: 1.5, borderRadius: 6, border: '1px solid #ccc' }}
       />
 
@@ -117,12 +116,12 @@ export default function RunPage() {
           disabled={busy || items.length === 0 || tooMany}
           style={{ padding: '10px 18px', fontSize: 15, borderRadius: 6, border: 'none', background: busy || items.length === 0 || tooMany ? '#bbb' : '#111', color: 'white', cursor: busy ? 'default' : 'pointer' }}
         >
-          {busy ? 'Running…' : `Run on ${items.length} item${items.length === 1 ? '' : 's'}`}
+          {busy ? 'Running…' : `Run on ${items.length} ${items.length === 1 ? 'entry' : 'entries'}`}
         </button>
 
         <span style={{ color: tooMany ? '#b00' : '#666', fontSize: 14 }}>
           {tooMany
-            ? `${items.length} items — ${MAX_ITEMS} is the limit for now`
+            ? `${items.length} entries — ${MAX_ITEMS} is the limit for now`
             : status}
         </span>
       </div>
